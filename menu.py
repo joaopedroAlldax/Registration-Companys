@@ -32,6 +32,7 @@ class Registration:
             session.commit()
             session.close()
             QMessageBox.about(self.window, "Parabéns!", "Registrado com sucesso!")
+            self.window.close()
 
         """for i in list_text:
                 print(i)"""
