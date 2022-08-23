@@ -25,6 +25,9 @@ class Registration:
         if '' in list_text:
             QMessageBox.about(self.window, "Atenção!", "Preencha todos os campos!")
 
+        elif not list_text[1].isnumeric() or not list_text[2].isnumeric():
+            QMessageBox.about(self.window, "Atenção!", "Você deu mole")
+
         else:
             obj = RegistrationCompany(name = list_text[0], code = list_text[1], cnpj = list_text[2], location = list_text[3], certificate = list_text[4])
 
