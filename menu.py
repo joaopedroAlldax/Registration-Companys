@@ -1,3 +1,4 @@
+from distutils.command import clean
 from PyQt5.QtCore import Qt
 from datetime import datetime
 from PyQt5 import uic, QtWidgets
@@ -35,10 +36,11 @@ class Registration:
             session.commit()
             session.close()
             QMessageBox.about(self.window, "Parabéns!", "Registrado com sucesso!")
-            self.window.close()
-
-        """for i in list_text:
-                print(i)"""
+            
+            self.window.lineEdit.setText('')
+            self.window.lineEdit_2.setText('')
+            self.window.lineEdit_3.setText('')
+            self.window.lineEdit_4.setText('')        
 
     def cancelar(self):
         self.window.close()
