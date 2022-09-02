@@ -2,3 +2,4 @@ venv/
 .vscode/
 connection/__pycache__/
 schemas/__pycache__/
+teste.txt/
