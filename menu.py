@@ -1,4 +1,5 @@
 from distutils.command import clean
+from turtle import update
 from PyQt5.QtCore import Qt
 from datetime import datetime
 from PyQt5 import uic, QtWidgets
@@ -10,27 +11,34 @@ from connection.connection import session
 class Registration:
     def __init__(self):
         self.app = QtWidgets.QApplication([])
-        self.window = uic.loadUi(r'qt/company-registration.ui')
-        self.window.pushButton.clicked.connect(self.registration)
-        self.window.pushButton_2.clicked.connect(self.cancelar)
+        self.window_main = uic.loadUi(r'qt/main-company.ui')
+
+    def main(self):
+        self.window_main.show()
+        self.window_main.pushButton.clicked.connect(self.window)
+        self.window_main.pushButton_2.clicked.connect(self.window2)
 
     def registration(self):
+        self.window = uic.loadUi(r'qt/company-registration.ui')
+        self.window.show()
+        self.window.pushButton.clicked.connect(self.registration)
+        self.window.pushButton_2.clicked.connect(self.cancelar)
         text1 = self.window.lineEdit.text()
         text2 = self.window.lineEdit_2.text()
         text3 = self.window.lineEdit_3.text()
         text4 = self.window.lineEdit_4.text()
         text5 = self.window.comboBox.currentText()
 
-        list_text = [text1, text2, text3, text4, text5]
+        self.list_text = [text1, text2, text3, text4, text5]
 
-        if '' in list_text:
+        if '' in self.list_text:
             QMessageBox.about(self.window, "Atenção!", "Preencha todos os campos!")
 
-        elif not list_text[1].isnumeric() or not list_text[2].isnumeric():
+        elif not self.list_text[1].isnumeric() or not self.list_text[2].isnumeric():
             QMessageBox.about(self.window, "Atenção!", "Você deu mole")
 
         else:
-            obj = RegistrationCompany(name = list_text[0], code = list_text[1], cnpj = list_text[2], location = list_text[3], certificate = list_text[4])
+            obj = RegistrationCompany(name = self.list_text[0], code = self.list_text[1], cnpj = self.list_text[2], location = self.list_text[3], certificate = self.list_text[4])
 
             session.add(obj)
             session.commit()
@@ -40,12 +48,29 @@ class Registration:
             self.window.lineEdit.setText('')
             self.window.lineEdit_2.setText('')
             self.window.lineEdit_3.setText('')
-            self.window.lineEdit_4.setText('')        
+            self.window.lineEdit_4.setText('')
 
+    def set_values_to_update(self):
+
+        self.company = self.window.comboBox_2.setText()
+        self.code = self.window.lineEdit_2.setText(self.list_text[1])
+        self.cnpj = self.window.lineEdit_3.setText(self.list_text[2])
+        self.location = self.window.lineEdit_4.setText(self.list_text[3])
+        self.certificate = self.window.comboBox.setText(self.list_text[4])
+
+    def update(self):
+        self.window2 = uic.loadUi(r'qt/company-update.ui')
+        self.window2.show()
+        self.window.pushButton_3.clicked.connect(self.set_values_to_update)
+        obj = session.query(RegistrationCompany).where(name=self.company).one()
+        session.commit()
+        session.refresh(obj)
+        session.close()
+        
     def cancelar(self):
         self.window.close()
     
 if __name__ == "__main__":
     menu = Registration()
-    menu.window.show()
+    #menu.main()
     menu.app.exec_()
