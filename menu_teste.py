@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+"""from PyQt5.QtCore import Qt
 from datetime import datetime
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtWidgets import *  # QMainWindow, QApplication, QMessageBox, QPushButton
@@ -56,4 +56,4 @@ class App(QApplication):
         window.show()
         self.exec_()
 
-App().tela_cadastro()
+App().tela_cadastro()"""

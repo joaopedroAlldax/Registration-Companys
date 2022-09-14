@@ -10,19 +10,44 @@ from connection.connection import session
 
 class Registration:
     def __init__(self):
+        self.session = session
         self.app = QtWidgets.QApplication([])
+        #tela inicial
         self.window_main = uic.loadUi(r'qt/main-company.ui')
-
-    def main(self):
-        self.window_main.show()
-        self.window_main.pushButton.clicked.connect(self.window)
-        self.window_main.pushButton_2.clicked.connect(self.window2)
-
-    def registration(self):
+        self.window_main.pushButton.clicked.connect(self.show_registration)
+        self.window_main.pushButton_2.clicked.connect(self.show_update)
+        #tela de cadastro
         self.window = uic.loadUi(r'qt/company-registration.ui')
-        self.window.show()
         self.window.pushButton.clicked.connect(self.registration)
         self.window.pushButton_2.clicked.connect(self.cancelar)
+        #tela de atualização
+        self.window2 = uic.loadUi(r'qt/company-update.ui')
+        self.window2.pushButton_3.clicked.connect(self.set_values_to_update)
+        #abrindo tela main
+        self.window_main.show()
+        #chamando o metodo no init para setar as empresas na comboBox antes da tela aparecer.
+        self.get_info_companies()
+
+    def get_info_companies(self):   
+        query_company = self.session.query(RegistrationCompany).all()
+        self.dict_info_companies = {}
+
+        for company in query_company:
+            self.dict_info_companies[company.name] = [company.code, company.cnpj, company.location, company.certificate]
+            
+
+        self.window2.comboBox_2.addItems(self.dict_info_companies.keys())
+        
+    #função criada para mostrar a tela de cadastro
+    def show_registration(self):
+        self.window.show()
+
+    #função criada para mostrar a tela de atualização
+    def show_update(self):
+        self.window2.show()
+     
+    #função criada para cadastrar determinada empresa no banco de dados através de uma lista
+    def registration(self):
         text1 = self.window.lineEdit.text()
         text2 = self.window.lineEdit_2.text()
         text3 = self.window.lineEdit_3.text()
@@ -59,12 +84,11 @@ class Registration:
         self.certificate = self.window.comboBox.setText(self.list_text[4])
 
     def update(self):
-        self.window2 = uic.loadUi(r'qt/company-update.ui')
-        self.window2.show()
-        self.window.pushButton_3.clicked.connect(self.set_values_to_update)
         obj = session.query(RegistrationCompany).where(name=self.company).one()
-        session.commit()
+
+        obj.code = 12
         session.refresh(obj)
+        session.commit()
         session.close()
         
     def cancelar(self):
